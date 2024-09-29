@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -57,11 +57,12 @@ def kaleidoscope_effect(frame):
 # Create an animation
 ani = FuncAnimation(fig, kaleidoscope_effect, frames=60, interval=100)
 
-</body>
-</html>
 
 # Save the animation as HTML
 html_output_path = '/mnt/data/kaleidoscope_animation.html'
 ani.save(html_output_path, writer=HTMLWriter())
 
 print(f"HTML file saved at {html_output_path}")
+
+</body>
+</html>
