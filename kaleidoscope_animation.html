@@ -1,0 +1,54 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, HTMLWriter
+from PIL import Image
+
+# Load the image
+image_path = '/mnt/data/mime.JPG'
+image = Image.open(image_path)
+
+# Convert image to numpy array
+image_array = np.array(image)
+
+# Set up the plot
+fig, ax = plt.subplots()
+im = ax.imshow(image_array)
+
+# Function to generate a kaleidoscope effect
+def kaleidoscope_effect(frame):
+    height, width, _ = image_array.shape
+    center_x, center_y = width // 2, height // 2
+    num_segments = 6  # Number of mirror segments for the kaleidoscope effect
+    theta = np.linspace(0, 2 * np.pi, num_segments + 1)
+    
+    # Create an empty array for the kaleidoscope image
+    kaleidoscope_image = np.zeros_like(image_array)
+    
+    for i in range(num_segments):
+        # Define angles for the current segment
+        angle1, angle2 = theta[i], theta[i + 1]
+        
+        # Generate a mask for the triangular segment
+        mask = np.zeros((height, width), dtype=np.bool_)
+        for y in range(height):
+            for x in range(width):
+                angle = np.arctan2(y - center_y, x - center_x)
+                if angle1 <= angle < angle2:
+                    mask[y, x] = True
+
+        # Mirror and rotate the segment
+        mirrored_segment = np.flip(image_array[mask], axis=1)  # Mirror the segment horizontally
+        kaleidoscope_image[mask] = mirrored_segment
+    
+    # Update the plot
+    im.set_array(kaleidoscope_image)
+    return [im]
+
+# Create an animation
+ani = FuncAnimation(fig, kaleidoscope_effect, frames=60, interval=100)
+
+# Save the animation as HTML
+html_output_path = '/mnt/data/kaleidoscope_animation.html'
+ani.save(html_output_path, writer=HTMLWriter())
+
+print(f"HTML file saved at {html_output_path}")
